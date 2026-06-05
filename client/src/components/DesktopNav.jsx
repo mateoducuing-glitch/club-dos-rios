@@ -29,7 +29,7 @@ export default function DesktopNav() {
       {/* Logo */}
       <div className="px-6 pt-8 pb-6 border-b border-verde-600">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-dorado-400 rounded-2xl flex items-center justify-center text-xl shrink-0">🥩</div>
+          <img src="/logo.png" alt="Dos Ríos" className="w-10 h-10 rounded-full object-cover shrink-0" />
           <div>
             <p className="text-white font-extrabold text-lg leading-tight">Club</p>
             <p className="text-dorado-400 font-extrabold text-lg leading-tight">Dos Ríos</p>

@@ -74,10 +74,7 @@ export default function Login() {
 
         {/* Logo */}
         <div className="text-center mb-8 animate-fade-in-up">
-          <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #e5ae1e, #c9920f)' }}>
-            <span className="text-4xl">🥩</span>
-          </div>
+          <img src="/logo.png" alt="Dos Ríos" className="w-24 h-24 rounded-full mx-auto mb-5 shadow-lg object-cover" />
           <h1 className="text-4xl font-extrabold text-white tracking-tight">CLUB</h1>
           <h1 className="text-4xl font-extrabold tracking-tight" style={{ color: '#e5ae1e' }}>DOS RÍOS</h1>
           <div className="flex items-center justify-center gap-2 mt-3 mb-3">
