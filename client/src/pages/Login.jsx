@@ -172,8 +172,11 @@ export default function Login() {
                 placeholder="Email (opcional)" className="input-field" />
               <input type="text" value={form.direccion} onChange={e => set('direccion', e.target.value)}
                 placeholder="Dirección de entrega (opcional)" className="input-field" />
-              <input type="date" value={form.fecha_nacimiento} onChange={e => set('fecha_nacimiento', e.target.value)}
-                className="input-field text-gray-500" />
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 mb-1 ml-1">Fecha de nacimiento (opcional)</label>
+                <input type="date" value={form.fecha_nacimiento} onChange={e => set('fecha_nacimiento', e.target.value)}
+                  className="input-field text-gray-600" />
+              </div>
               {error && <p className="text-red-500 text-sm text-center">{error}</p>}
               <button type="submit" disabled={cargando} className="btn-primary w-full mt-1">
                 {cargando ? 'Creando cuenta...' : 'Crear cuenta y entrar'}
