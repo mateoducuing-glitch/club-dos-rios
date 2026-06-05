@@ -4,7 +4,7 @@ import { useCarrito } from '../context/CarritoContext'
 import { useAuth } from '../context/AuthContext'
 import api from '../api'
 import { MOCK_CATALOGO } from '../mockData'
-import { Plus, Minus, ArrowLeft, CheckCircle, MapPin, FileText, Banknote, ArrowLeftRight, CreditCard } from 'lucide-react'
+import { Plus, Minus, ArrowLeft, CheckCircle, MapPin, FileText, Banknote, ArrowLeftRight } from 'lucide-react'
 
 const CATEGORIAS_EMOJI = {
   Vacunos: '🥩',
@@ -16,7 +16,6 @@ const CATEGORIAS_EMOJI = {
 const METODOS_PAGO = [
   { id: 'efectivo',      label: 'Efectivo',      icon: Banknote,       desc: 'Pagás al recibir' },
   { id: 'transferencia', label: 'Transferencia',  icon: ArrowLeftRight, desc: 'CBU/alias al confirmar' },
-  { id: 'tarjeta',       label: 'Tarjeta',        icon: CreditCard,     desc: 'Débito o crédito' },
 ]
 
 export default function HacerPedido() {

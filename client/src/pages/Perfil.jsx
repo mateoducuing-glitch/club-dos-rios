@@ -2,17 +2,15 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import api from '../api'
 import Header from '../components/Header'
-import { LogOut, Edit3, Check, Banknote, ArrowLeftRight, CreditCard, ChevronRight } from 'lucide-react'
+import { LogOut, Edit3, Check, Banknote, ArrowLeftRight, ChevronRight } from 'lucide-react'
 
 const NIVEL_EMOJI = { Bronce: '🥉', Plata: '🥈', Oro: '🥇', Platino: '💎' }
 
 const METODOS_PAGO = [
   { id: 'efectivo',      label: 'Efectivo',      icon: Banknote,       desc: 'Pagás al recibir' },
   { id: 'transferencia', label: 'Transferencia',  icon: ArrowLeftRight, desc: 'CBU/alias' },
-  { id: 'tarjeta',       label: 'Tarjeta',        icon: CreditCard,     desc: 'Débito o crédito' },
 ]
 
-const TIPOS_TARJETA = ['Visa débito', 'Visa crédito', 'Mastercard débito', 'Mastercard crédito', 'Cabal', 'Naranja', 'Otra']
 
 export default function Perfil() {
   const { usuario, logout, actualizarUsuario } = useAuth()
@@ -29,8 +27,7 @@ export default function Perfil() {
 
   const [editandoPago, setEditandoPago] = useState(false)
   const [metodoPref, setMetodoPref] = useState(usuario?.metodo_pago_preferido || '')
-  const [tarjetaTipo, setTarjetaTipo] = useState(usuario?.tarjeta_tipo || '')
-  const [tarjetaUltimos4, setTarjetaUltimos4] = useState(usuario?.tarjeta_ultimos4 || '')
+
   const [guardandoPago, setGuardandoPago] = useState(false)
   const [guardadoPago, setGuardadoPago] = useState(false)
 
@@ -55,8 +52,8 @@ export default function Perfil() {
     try {
       const payload = {
         metodo_pago_preferido: metodoPref,
-        tarjeta_tipo: metodoPref === 'tarjeta' ? tarjetaTipo : null,
-        tarjeta_ultimos4: metodoPref === 'tarjeta' ? tarjetaUltimos4.replace(/\D/g, '').slice(0, 4) : null,
+        tarjeta_tipo: null,
+        tarjeta_ultimos4: null,
       }
       const res = await api.put('/clientes/me', payload)
       actualizarUsuario(res.data)
@@ -214,37 +211,8 @@ export default function Perfil() {
                 })}
               </div>
 
-              {/* Datos de tarjeta */}
-              {metodoPref === 'tarjeta' && (
-                <div className="flex flex-col gap-2 pt-1">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Tipo de tarjeta</label>
-                    <select
-                      value={tarjetaTipo}
-                      onChange={e => setTarjetaTipo(e.target.value)}
-                      className="input-field"
-                    >
-                      <option value="">Seleccioná el tipo</option>
-                      {TIPOS_TARJETA.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Últimos 4 dígitos</label>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={4}
-                      value={tarjetaUltimos4}
-                      onChange={e => setTarjetaUltimos4(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                      placeholder="1234"
-                      className="input-field tracking-widest"
-                    />
-                  </div>
-                </div>
-              )}
-
               <div className="flex gap-2 mt-1">
-                <button onClick={() => { setEditandoPago(false); setMetodoPref(usuario?.metodo_pago_preferido || ''); setTarjetaTipo(usuario?.tarjeta_tipo || ''); setTarjetaUltimos4(usuario?.tarjeta_ultimos4 || '') }} className="btn-secondary flex-1">
+                <button onClick={() => { setEditandoPago(false); setMetodoPref(usuario?.metodo_pago_preferido || '') }} className="btn-secondary flex-1">
                   Cancelar
                 </button>
                 <button onClick={guardarPago} disabled={guardandoPago || !metodoPref} className="btn-primary flex-1 disabled:opacity-50">
@@ -261,14 +229,7 @@ export default function Perfil() {
                   </div>
                   <div className="flex-1">
                     <p className="font-semibold text-verde-700">{metodoPagoActual.label}</p>
-                    {usuario?.metodo_pago_preferido === 'tarjeta' && usuario?.tarjeta_ultimos4 && (
-                      <p className="text-xs text-gray-500">
-                        {usuario.tarjeta_tipo && `${usuario.tarjeta_tipo} · `}terminada en <strong>{usuario.tarjeta_ultimos4}</strong>
-                      </p>
-                    )}
-                    {usuario?.metodo_pago_preferido !== 'tarjeta' && (
-                      <p className="text-xs text-gray-400">{metodoPagoActual.desc}</p>
-                    )}
+                    <p className="text-xs text-gray-400">{metodoPagoActual.desc}</p>
                   </div>
                   <Check size={16} className="text-verde-700" />
                 </div>
