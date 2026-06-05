@@ -6,7 +6,7 @@ import { Eye, EyeOff } from 'lucide-react'
 
 export default function Login() {
   const [modo, setModo] = useState(null) // null | 'login' | 'registro'
-  const [form, setForm] = useState({ nombre: '', telefono: '', password: '', email: '', direccion: '', fecha_nacimiento: '' })
+  const [form, setForm] = useState({ nombre: '', telefono: '', password: '', email: '', direccion: '', fecha_nacimiento: '', dia: '', mes: '', anio: '' })
   const [mostrarPassword, setMostrarPassword] = useState(false)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
@@ -14,6 +14,16 @@ export default function Login() {
   const navigate = useNavigate()
 
   function set(key, val) { setForm(f => ({ ...f, [key]: val })); setError('') }
+
+  function buildFecha(dia, mes, anio) {
+    if (dia && mes && anio && anio.length === 4) {
+      const d = String(dia).padStart(2, '0')
+      const m = String(mes).padStart(2, '0')
+      setForm(f => ({ ...f, dia, mes, anio, fecha_nacimiento: `${anio}-${m}-${d}` }))
+    } else {
+      setForm(f => ({ ...f, dia, mes, anio, fecha_nacimiento: '' }))
+    }
+  }
 
   async function handleLogin(e) {
     e.preventDefault()
@@ -174,8 +184,29 @@ export default function Login() {
                 placeholder="Dirección de entrega (opcional)" className="input-field" />
               <div>
                 <label className="block text-xs font-semibold text-gray-400 mb-1 ml-1">Fecha de nacimiento (opcional)</label>
-                <input type="date" value={form.fecha_nacimiento} onChange={e => set('fecha_nacimiento', e.target.value)}
-                  className="input-field text-gray-600" />
+                <div className="flex gap-2">
+                  <input
+                    type="number" inputMode="numeric" min="1" max="31"
+                    placeholder="Día"
+                    value={form.dia || ''}
+                    onChange={e => { set('dia', e.target.value); buildFecha(e.target.value, form.mes, form.anio) }}
+                    className="input-field text-center w-1/3"
+                  />
+                  <input
+                    type="number" inputMode="numeric" min="1" max="12"
+                    placeholder="Mes"
+                    value={form.mes || ''}
+                    onChange={e => { set('mes', e.target.value); buildFecha(form.dia, e.target.value, form.anio) }}
+                    className="input-field text-center w-1/3"
+                  />
+                  <input
+                    type="number" inputMode="numeric" min="1900" max="2010"
+                    placeholder="Año"
+                    value={form.anio || ''}
+                    onChange={e => { set('anio', e.target.value); buildFecha(form.dia, form.mes, e.target.value) }}
+                    className="input-field text-center w-1/3"
+                  />
+                </div>
               </div>
               {error && <p className="text-red-500 text-sm text-center">{error}</p>}
               <button type="submit" disabled={cargando} className="btn-primary w-full mt-1">
