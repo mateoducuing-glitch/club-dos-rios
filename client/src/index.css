@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body, #root {
+    height: 100%;
+    background-color: #f8f4ef;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    overscroll-behavior: none;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-verde-700 text-white font-semibold py-3 px-6 rounded-2xl
+           active:scale-95 transition-all duration-150 shadow-md
+           hover:bg-verde-800 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-verde-700 text-verde-700 font-semibold py-3 px-6 rounded-2xl
+           active:scale-95 transition-all duration-150
+           hover:bg-verde-50 disabled:opacity-50;
+  }
+
+  .btn-gold {
+    @apply bg-dorado-500 text-white font-semibold py-3 px-6 rounded-2xl
+           active:scale-95 transition-all duration-150 shadow-md
+           hover:bg-dorado-600 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .card {
+    @apply bg-white rounded-3xl shadow-card p-5;
+  }
+
+  .input-field {
+    @apply w-full bg-white border-2 border-gray-200 rounded-2xl px-4 py-3
+           text-gray-800 text-base outline-none
+           focus:border-verde-500 transition-colors;
+  }
+}
+
+/* Animación suave al entrar */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+/* Barra de progreso animada */
+@keyframes fillBar {
+  from { width: 0%; }
+}
+
+.animate-fill-bar {
+  animation: fillBar 0.8s ease-out forwards;
+}
+
+/* Safe area para iPhone */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
