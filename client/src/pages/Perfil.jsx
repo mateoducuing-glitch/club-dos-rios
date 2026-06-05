@@ -82,7 +82,7 @@ export default function Perfil() {
 
         {/* Card nivel */}
         <div className="card text-center">
-          <div className="w-16 h-16 rounded-full bg-verde-50 flex items-center justify-center mx-auto mb-3 text-3xl">
+          <div className="w-16 h-16 rounded-full bg-dorado-50 flex items-center justify-center mx-auto mb-3 text-3xl">
             {emoji}
           </div>
           <h2 className="text-xl font-bold text-gray-800">{usuario?.nombre || 'Sin nombre'}</h2>
@@ -110,7 +110,7 @@ export default function Perfil() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-700">Mis datos</h3>
             {!editando && (
-              <button onClick={() => setEditando(true)} className="flex items-center gap-1.5 text-verde-700 font-medium text-sm">
+              <button onClick={() => setEditando(true)} className="flex items-center gap-1.5 text-dorado-700 font-medium text-sm">
                 <Edit3 size={14} /> Editar
               </button>
             )}
@@ -170,11 +170,11 @@ export default function Perfil() {
         <div className="card md:col-span-1">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <CreditCard size={16} className="text-verde-700" />
+              <CreditCard size={16} className="text-dorado-700" />
               <h3 className="font-semibold text-gray-700">Método de pago preferido</h3>
             </div>
             {!editandoPago && (
-              <button onClick={() => setEditandoPago(true)} className="flex items-center gap-1.5 text-verde-700 font-medium text-sm">
+              <button onClick={() => setEditandoPago(true)} className="flex items-center gap-1.5 text-dorado-700 font-medium text-sm">
                 <Edit3 size={14} /> {metodoPagoActual ? 'Cambiar' : 'Agregar'}
               </button>
             )}
@@ -191,21 +191,21 @@ export default function Perfil() {
                       onClick={() => setMetodoPref(m.id)}
                       className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left ${
                         metodoPref === m.id
-                          ? 'border-verde-700 bg-verde-50'
+                          ? 'border-dorado-500 bg-dorado-50'
                           : 'border-gray-100 bg-white hover:border-gray-200'
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                        metodoPref === m.id ? 'bg-verde-700' : 'bg-gray-100'
+                        metodoPref === m.id ? 'bg-[#1a1208]' : 'bg-gray-100'
                       }`}>
                         <Icon size={18} className={metodoPref === m.id ? 'text-white' : 'text-gray-500'} />
                       </div>
                       <div>
-                        <p className={`font-semibold text-sm ${metodoPref === m.id ? 'text-verde-700' : 'text-gray-800'}`}>{m.label}</p>
+                        <p className={`font-semibold text-sm ${metodoPref === m.id ? 'text-dorado-700' : 'text-gray-800'}`}>{m.label}</p>
                         <p className="text-xs text-gray-400">{m.desc}</p>
                       </div>
                       {metodoPref === m.id && (
-                        <div className="ml-auto w-5 h-5 rounded-full bg-verde-700 flex items-center justify-center">
+                        <div className="ml-auto w-5 h-5 rounded-full bg-[#1a1208] flex items-center justify-center">
                           <Check size={12} className="text-white" />
                         </div>
                       )}
@@ -255,12 +255,12 @@ export default function Perfil() {
           ) : (
             <div>
               {metodoPagoActual ? (
-                <div className="flex items-center gap-3 p-3 bg-verde-50 rounded-2xl">
-                  <div className="w-10 h-10 rounded-xl bg-verde-700 flex items-center justify-center">
+                <div className="flex items-center gap-3 p-3 bg-dorado-50 rounded-2xl">
+                  <div className="w-10 h-10 rounded-xl bg-[#1a1208] flex items-center justify-center">
                     {(() => { const Icon = metodoPagoActual.icon; return <Icon size={18} className="text-white" /> })()}
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-verde-700">{metodoPagoActual.label}</p>
+                    <p className="font-semibold text-dorado-700">{metodoPagoActual.label}</p>
                     {usuario?.metodo_pago_preferido === 'tarjeta' && usuario?.tarjeta_ultimos4 && (
                       <p className="text-xs text-gray-500">
                         {usuario.tarjeta_tipo && `${usuario.tarjeta_tipo} · `}terminada en <strong>{usuario.tarjeta_ultimos4}</strong>
@@ -270,12 +270,12 @@ export default function Perfil() {
                       <p className="text-xs text-gray-400">{metodoPagoActual.desc}</p>
                     )}
                   </div>
-                  <Check size={16} className="text-verde-700" />
+                  <Check size={16} className="text-dorado-700" />
                 </div>
               ) : (
                 <button
                   onClick={() => setEditandoPago(true)}
-                  className="w-full flex items-center justify-between p-3 border-2 border-dashed border-gray-200 rounded-2xl text-gray-400 hover:border-verde-300 hover:text-verde-600 transition-all"
+                  className="w-full flex items-center justify-between p-3 border-2 border-dashed border-gray-200 rounded-2xl text-gray-400 hover:border-dorado-300 hover:text-dorado-600 transition-all"
                 >
                   <span className="text-sm">Agregar método de pago</span>
                   <ChevronRight size={16} />

@@ -3,7 +3,7 @@ import { MessageCircle, CheckCircle, XCircle, Clock } from 'lucide-react'
 const WHATSAPP = import.meta.env.VITE_WHATSAPP_DOS_RIOS || '+5491161333709'
 
 const ESTADO_CONFIG = {
-  pendiente: { label: 'Disponible', color: 'text-verde-700', bg: 'bg-verde-50', icon: Clock },
+  pendiente: { label: 'Disponible', color: 'text-dorado-700', bg: 'bg-dorado-50', icon: Clock },
   usado:     { label: 'Usado',      color: 'text-gray-400',  bg: 'bg-gray-50',  icon: CheckCircle },
   vencido:   { label: 'Vencido',    color: 'text-red-400',   bg: 'bg-red-50',   icon: XCircle },
   cancelado: { label: 'Cancelado',  color: 'text-gray-400',  bg: 'bg-gray-50',  icon: XCircle },

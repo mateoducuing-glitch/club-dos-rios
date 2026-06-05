@@ -15,7 +15,7 @@ function RutaProtegida({ children }) {
   const { usuario, cargando } = useAuth()
   if (cargando) return (
     <div className="min-h-screen flex items-center justify-center bg-crema">
-      <div className="w-10 h-10 border-4 border-verde-700 border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-dorado-500 border-t-transparent rounded-full animate-spin" />
     </div>
   )
   return usuario ? children : <Navigate to="/login" replace />
