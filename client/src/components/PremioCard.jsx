@@ -8,11 +8,11 @@ export default function PremioCard({ premio, puntosActuales, onCanjear, canjeand
     <div className={`card flex flex-col gap-3 transition-all duration-200 ${puedesCanjear ? 'hover:shadow-card-hover' : 'opacity-80'}`}>
       <div className="flex items-start gap-3">
         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
-          puedesCanjear ? 'bg-dorado-50' : 'bg-gray-100'
+          puedesCanjear ? 'bg-verde-50' : 'bg-gray-100'
         }`}>
           {premio.imagen_url
             ? <img src={premio.imagen_url} alt={premio.nombre} className="w-8 h-8 object-cover rounded-xl" />
-            : <Gift size={22} className={puedesCanjear ? 'text-dorado-700' : 'text-gray-400'} />
+            : <Gift size={22} className={puedesCanjear ? 'text-verde-700' : 'text-gray-400'} />
           }
         </div>
         <div className="flex-1 min-w-0">

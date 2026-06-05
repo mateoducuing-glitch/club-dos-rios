@@ -71,8 +71,8 @@ export default function HacerPedido() {
     return (
       <div className="min-h-screen bg-crema flex flex-col items-center justify-center px-6 text-center">
         <div className="animate-fade-in-up w-full max-w-sm">
-          <div className="w-24 h-24 bg-dorado-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle size={48} strokeWidth={1.5} style={{ color: '#c9920f' }} />
+          <div className="w-24 h-24 bg-verde-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={48} className="text-verde-700" strokeWidth={1.5} />
           </div>
           <h2 className="text-2xl font-extrabold text-gray-800 mb-2">¡Pedido confirmado!</h2>
           <p className="text-gray-500 mb-6">Tu pedido fue enviado a Dos Ríos.<br />Te avisamos cuando esté listo.</p>
@@ -119,14 +119,13 @@ export default function HacerPedido() {
   if (paso === 'carrito') {
     return (
       <div className="min-h-screen bg-crema flex flex-col">
-        <div className="text-white px-5 pt-12 pb-5 flex items-center gap-3"
-          style={{ background: 'linear-gradient(160deg, #0a0a0a 0%, #1a1208 60%, #0f0a00 100%)' }}>
-          <button onClick={() => setPaso('catalogo')} className="p-2 rounded-xl bg-white/10">
+        <div className="bg-verde-700 text-white px-5 pt-12 pb-5 flex items-center gap-3">
+          <button onClick={() => setPaso('catalogo')} className="p-2 rounded-xl bg-verde-600">
             <ArrowLeft size={18} />
           </button>
           <div>
             <h1 className="text-xl font-bold">Tu pedido</h1>
-            <p className="text-white/50 text-sm">{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</p>
+            <p className="text-verde-200 text-sm">{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</p>
           </div>
         </div>
 
@@ -143,7 +142,7 @@ export default function HacerPedido() {
                   <Minus size={14} className="text-gray-600" />
                 </button>
                 <span className="w-6 text-center font-bold text-gray-800">{item.cantidad}</span>
-                <button onClick={() => agregar(item)} className="w-8 h-8 rounded-full bg-[#1a1208] flex items-center justify-center">
+                <button onClick={() => agregar(item)} className="w-8 h-8 rounded-full bg-verde-700 flex items-center justify-center">
                   <Plus size={14} className="text-white" />
                 </button>
               </div>
@@ -156,7 +155,7 @@ export default function HacerPedido() {
           {/* Dirección */}
           <div className="card">
             <div className="flex items-center gap-2 mb-2">
-              <MapPin size={16} style={{ color: '#c9920f' }} />
+              <MapPin size={16} className="text-verde-700" />
               <span className="font-semibold text-gray-700">Dirección de entrega</span>
             </div>
             <input
@@ -171,7 +170,7 @@ export default function HacerPedido() {
           {/* Método de pago */}
           <div className="card">
             <div className="flex items-center gap-2 mb-3">
-              <CreditCard size={16} style={{ color: '#c9920f' }} />
+              <CreditCard size={16} className="text-verde-700" />
               <span className="font-semibold text-gray-700">Método de pago</span>
             </div>
             <div className="flex flex-col gap-2">
@@ -183,21 +182,21 @@ export default function HacerPedido() {
                     onClick={() => setMetodoPago(m.id)}
                     className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left ${
                       metodoPago === m.id
-                        ? 'border-dorado-500 bg-dorado-50'
+                        ? 'border-verde-700 bg-verde-50'
                         : 'border-gray-100 bg-white hover:border-gray-200'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                      metodoPago === m.id ? 'bg-[#1a1208]' : 'bg-gray-100'
+                      metodoPago === m.id ? 'bg-verde-700' : 'bg-gray-100'
                     }`}>
                       <Icon size={18} className={metodoPago === m.id ? 'text-white' : 'text-gray-500'} />
                     </div>
                     <div>
-                      <p className={`font-semibold text-sm ${metodoPago === m.id ? 'text-dorado-700' : 'text-gray-800'}`}>{m.label}</p>
+                      <p className={`font-semibold text-sm ${metodoPago === m.id ? 'text-verde-700' : 'text-gray-800'}`}>{m.label}</p>
                       <p className="text-xs text-gray-400">{m.desc}</p>
                     </div>
                     {metodoPago === m.id && (
-                      <div className="ml-auto w-5 h-5 rounded-full bg-dorado-500 flex items-center justify-center">
+                      <div className="ml-auto w-5 h-5 rounded-full bg-verde-700 flex items-center justify-center">
                         <CheckCircle size={12} className="text-white" />
                       </div>
                     )}
@@ -210,7 +209,7 @@ export default function HacerPedido() {
           {/* Notas */}
           <div className="card">
             <div className="flex items-center gap-2 mb-2">
-              <FileText size={16} style={{ color: '#c9920f' }} />
+              <FileText size={16} className="text-verde-700" />
               <span className="font-semibold text-gray-700">Notas (opcional)</span>
             </div>
             <textarea
@@ -223,12 +222,12 @@ export default function HacerPedido() {
           </div>
 
           {/* Resumen */}
-          <div className="rounded-3xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #0a0a0a, #1a1208)' }}>
+          <div className="card bg-verde-700 text-white">
             <div className="flex justify-between items-center mb-1">
-              <span className="text-white/60 text-sm">Total</span>
+              <span className="text-verde-200 text-sm">Total</span>
               <span className="font-bold">${total.toLocaleString('es-AR')}</span>
             </div>
-            <div className="flex justify-between items-center pt-2 border-t border-white/10">
+            <div className="flex justify-between items-center pt-2 border-t border-verde-600">
               <span className="text-dorado-300 text-sm">⭐ Puntos a ganar</span>
               <span className="text-dorado-300 font-bold">+{puntosAGanar}</span>
             </div>
@@ -251,15 +250,14 @@ export default function HacerPedido() {
   // ── PANTALLA CATÁLOGO ────────────────────────────────────────
   return (
     <div className="min-h-screen bg-crema flex flex-col">
-      <div className="text-white px-5 pt-12 pb-5 md:pt-8"
-        style={{ background: 'linear-gradient(160deg, #0a0a0a 0%, #1a1208 60%, #0f0a00 100%)' }}>
+      <div className="bg-verde-700 text-white px-5 pt-12 pb-5 md:pt-8">
         <div className="flex items-center gap-3 mb-4">
-          <button onClick={() => navigate(-1)} className="p-2 rounded-xl bg-white/10 md:hidden">
+          <button onClick={() => navigate(-1)} className="p-2 rounded-xl bg-verde-600 md:hidden">
             <ArrowLeft size={18} />
           </button>
           <div>
             <h1 className="text-xl font-bold">Hacer pedido</h1>
-            <p className="text-white/50 text-sm">Dos Ríos Carnicería</p>
+            <p className="text-verde-200 text-sm">Dos Ríos Carnicería</p>
           </div>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
@@ -268,7 +266,7 @@ export default function HacerPedido() {
               key={cat}
               onClick={() => setCategoriaActiva(cat)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
-                categoriaSeleccionada === cat ? 'bg-white text-[#1a1208]' : 'bg-white/10 text-white/75'
+                categoriaSeleccionada === cat ? 'bg-white text-verde-700' : 'bg-verde-600 text-verde-100'
               }`}
             >
               {CATEGORIAS_EMOJI[cat] || '🍽️'} {cat}
@@ -284,19 +282,19 @@ export default function HacerPedido() {
             const cantidad = cantidadDe(producto.id)
             return (
               <div key={producto.id} className="card flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-dorado-50 flex items-center justify-center flex-shrink-0 text-2xl">
+                <div className="w-12 h-12 rounded-2xl bg-verde-50 flex items-center justify-center flex-shrink-0 text-2xl">
                   {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-800">{producto.nombre}</p>
                   <p className="text-xs text-gray-400 mt-0.5 truncate">{producto.descripcion}</p>
-                  <p className="font-bold text-sm mt-1" style={{ color: '#c9920f' }}>
+                  <p className="text-verde-700 font-bold text-sm mt-1">
                     ${producto.precio.toLocaleString('es-AR')}<span className="text-gray-400 font-normal"> / {producto.unidad}</span>
                   </p>
                 </div>
                 <div>
                   {cantidad === 0 ? (
-                    <button onClick={() => agregar(producto)} className="w-10 h-10 rounded-2xl bg-[#1a1208] flex items-center justify-center active:scale-90 transition-all shadow-md">
+                    <button onClick={() => agregar(producto)} className="w-10 h-10 rounded-2xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all shadow-md">
                       <Plus size={18} className="text-white" />
                     </button>
                   ) : (
@@ -305,7 +303,7 @@ export default function HacerPedido() {
                         <Minus size={14} className="text-gray-600" />
                       </button>
                       <span className="w-5 text-center font-bold text-gray-800 text-sm">{cantidad}</span>
-                      <button onClick={() => agregar(producto)} className="w-8 h-8 rounded-full bg-[#1a1208] flex items-center justify-center active:scale-90 transition-all">
+                      <button onClick={() => agregar(producto)} className="w-8 h-8 rounded-full bg-verde-700 flex items-center justify-center active:scale-90 transition-all">
                         <Plus size={14} className="text-white" />
                       </button>
                     </div>
@@ -335,7 +333,7 @@ export default function HacerPedido() {
                       <Minus size={11} />
                     </button>
                     <span className="w-4 text-center text-sm font-bold">{item.cantidad}</span>
-                    <button onClick={() => agregar(item)} className="w-6 h-6 rounded-full bg-[#1a1208] flex items-center justify-center">
+                    <button onClick={() => agregar(item)} className="w-6 h-6 rounded-full bg-verde-700 flex items-center justify-center">
                       <Plus size={11} className="text-white" />
                     </button>
                   </div>
@@ -365,7 +363,7 @@ export default function HacerPedido() {
                         title={m.label}
                         className={`flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-xl border-2 transition-all text-xs font-semibold ${
                           metodoPago === m.id
-                            ? 'border-dorado-500 bg-dorado-50 text-dorado-700'
+                            ? 'border-verde-700 bg-verde-50 text-verde-700'
                             : 'border-gray-100 text-gray-500 hover:border-gray-200'
                         }`}
                       >
@@ -410,10 +408,9 @@ export default function HacerPedido() {
         <div className="fixed bottom-6 left-4 right-4 md:hidden z-50 animate-fade-in-up">
           <button
             onClick={() => setPaso('carrito')}
-            className="w-full text-white rounded-3xl py-4 px-5 flex items-center justify-between shadow-2xl active:scale-95 transition-all"
-            style={{ background: 'linear-gradient(135deg, #0a0a0a, #1a1208)' }}
+            className="w-full bg-verde-700 text-white rounded-3xl py-4 px-5 flex items-center justify-between shadow-2xl active:scale-95 transition-all"
           >
-            <div className="bg-white/15 rounded-xl w-8 h-8 flex items-center justify-center font-bold text-sm">{totalItems}</div>
+            <div className="bg-verde-600 rounded-xl w-8 h-8 flex items-center justify-center font-bold text-sm">{totalItems}</div>
             <span className="font-bold text-base">Ver pedido</span>
             <span className="font-bold">${total.toLocaleString('es-AR')}</span>
           </button>

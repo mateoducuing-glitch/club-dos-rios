@@ -59,7 +59,7 @@ export default function Premios() {
 
         {cargando ? (
           <div className="flex justify-center py-12">
-            <div className="w-8 h-8 border-4 border-dorado-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-verde-700 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : premios.length === 0 ? (
           <div className="text-center py-12 text-gray-400">

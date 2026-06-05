@@ -4,7 +4,7 @@ const ESTADO_CONFIG = {
   pendiente:  { label: 'Pendiente',    icon: Clock,        color: 'text-orange-500', bg: 'bg-orange-50' },
   preparando: { label: 'En preparación', icon: ChefHat,    color: 'text-blue-500',   bg: 'bg-blue-50'   },
   listo:      { label: 'Listo',         icon: CheckCircle, color: 'text-green-500',  bg: 'bg-green-50'  },
-  entregado:  { label: 'Entregado',     icon: Truck,       color: 'text-dorado-700', bg: 'bg-dorado-50' },
+  entregado:  { label: 'Entregado',     icon: Truck,       color: 'text-verde-700',  bg: 'bg-verde-50'  },
 }
 
 export default function PedidoCard({ pedido }) {
