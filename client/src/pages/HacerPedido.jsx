@@ -169,7 +169,7 @@ export default function HacerPedido() {
           {/* Método de pago */}
           <div className="card">
             <div className="flex items-center gap-2 mb-3">
-              <CreditCard size={16} className="text-verde-700" />
+              <Banknote size={16} className="text-verde-700" />
               <span className="font-semibold text-gray-700">Método de pago</span>
             </div>
             <div className="flex flex-col gap-2">
