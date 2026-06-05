@@ -17,8 +17,12 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3002
 
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',')
+  : ['http://localhost:5174', 'http://localhost:5175', 'http://localhost:4173']
+
 app.use(cors({
-  origin: ['http://localhost:5174', 'http://localhost:5175', 'http://localhost:4173'],
+  origin: allowedOrigins,
   credentials: true
 }))
 app.use(bodyParser.json())
@@ -46,6 +50,12 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' })
 })
 
-app.listen(PORT, () => {
-  console.log(`🥩 Club Dos Ríos - Backend corriendo en http://localhost:${PORT}`)
-})
+// Exportar para Vercel serverless
+export default app
+
+// Solo escuchar en desarrollo local
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🥩 Club Dos Ríos - Backend corriendo en http://localhost:${PORT}`)
+  })
+}
