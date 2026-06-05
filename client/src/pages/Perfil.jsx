@@ -167,7 +167,7 @@ export default function Perfil() {
         <div className="card md:col-span-1">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <CreditCard size={16} className="text-verde-700" />
+              <Banknote size={16} className="text-verde-700" />
               <h3 className="font-semibold text-gray-700">Método de pago preferido</h3>
             </div>
             {!editandoPago && (
