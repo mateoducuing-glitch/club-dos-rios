@@ -5,9 +5,6 @@ import { acreditarPuntos } from '../services/puntosService.js'
 
 const router = express.Router()
 
-// En desarrollo mostramos el código; en producción se enviará por WhatsApp
-const codigosTemporales = new Map()
-
 router.post('/solicitar-codigo', async (req, res) => {
   try {
     const { telefono } = req.body
@@ -15,10 +12,14 @@ router.post('/solicitar-codigo', async (req, res) => {
 
     const telefonoLimpio = telefono.replace(/\s/g, '').replace(/-/g, '')
     const codigo = Math.floor(1000 + Math.random() * 9000).toString()
+    const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString()
 
-    codigosTemporales.set(telefonoLimpio, { codigo, expires: Date.now() + 10 * 60 * 1000 })
+    // Guardar código en Supabase para que persista entre instancias serverless
+    await supabase.from('codigos_verificacion').upsert(
+      { telefono: telefonoLimpio, codigo, expires_at: expires },
+      { onConflict: 'telefono' }
+    )
 
-    // En desarrollo devolvemos el código directamente
     const isDev = process.env.NODE_ENV !== 'production'
     res.json({ ok: true, ...(isDev && { codigo_desarrollo: codigo }) })
   } catch (err) {
@@ -32,13 +33,20 @@ router.post('/verificar-codigo', async (req, res) => {
     if (!telefono || !codigo) return res.status(400).json({ error: 'Teléfono y código requeridos' })
 
     const telefonoLimpio = telefono.replace(/\s/g, '').replace(/-/g, '')
-    const registro = codigosTemporales.get(telefonoLimpio)
 
-    if (!registro || registro.codigo !== codigo || Date.now() > registro.expires) {
+    // Verificar código desde Supabase
+    const { data: registro } = await supabase
+      .from('codigos_verificacion')
+      .select('*')
+      .eq('telefono', telefonoLimpio)
+      .single()
+
+    if (!registro || registro.codigo !== codigo || new Date() > new Date(registro.expires_at)) {
       return res.status(401).json({ error: 'Código inválido o expirado' })
     }
 
-    codigosTemporales.delete(telefonoLimpio)
+    // Borrar código usado
+    await supabase.from('codigos_verificacion').delete().eq('telefono', telefonoLimpio)
 
     // Buscar o crear cliente
     let { data: cliente } = await supabase
@@ -51,21 +59,22 @@ router.post('/verificar-codigo', async (req, res) => {
     if (!cliente) {
       const { data: nuevoCliente, error } = await supabase
         .from('clientes')
-        .insert({ telefono: telefonoLimpio, nombre: telefonoLimpio })
+        .insert({ telefono: telefonoLimpio, nombre: null })
         .select()
         .single()
 
       if (error) throw error
       cliente = nuevoCliente
       esNuevo = true
-    }
 
-    // Bono de bienvenida
-    if (esNuevo) {
+      // Bono de bienvenida
       await acreditarPuntos(cliente.id, null, 100, 'Bienvenida al Club Dos Ríos')
       const { data } = await supabase.from('clientes').select('*').eq('id', cliente.id).single()
       cliente = data
     }
+
+    // Mostrar registro si no tiene nombre cargado
+    const necesitaCompletarPerfil = !cliente.nombre || cliente.nombre === cliente.telefono
 
     const token = jwt.sign(
       { id: cliente.id, telefono: cliente.telefono, rol: 'cliente' },
@@ -73,7 +82,7 @@ router.post('/verificar-codigo', async (req, res) => {
       { expiresIn: '30d' }
     )
 
-    res.json({ token, cliente, es_nuevo: esNuevo })
+    res.json({ token, cliente, es_nuevo: esNuevo || necesitaCompletarPerfil })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
