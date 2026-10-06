@@ -18,6 +18,25 @@ const METODOS_PAGO = [
   { id: 'transferencia', label: 'Transferencia',  icon: ArrowLeftRight, desc: 'CBU/alias al confirmar' },
 ]
 
+function AvisoPrecioReferencia({ onCancelar, onConfirmar, enviando }) {
+  return (
+    <div className="fixed inset-0 bg-black/40 z-[60] flex items-end md:items-center justify-center px-4 pb-6 md:pb-0">
+      <div className="card w-full max-w-sm bg-white animate-fade-in-up">
+        <h3 className="font-bold text-gray-800 text-lg mb-2">Precio de referencia</h3>
+        <p className="text-sm text-gray-500 mb-5">
+          Este precio es una referencia. Una vez que pesemos tu pedido, te vamos a enviar el total correcto.
+        </p>
+        <div className="flex gap-2">
+          <button onClick={onCancelar} className="btn-secondary flex-1">Cancelar</button>
+          <button onClick={onConfirmar} disabled={enviando} className="btn-primary flex-1 disabled:opacity-50">
+            {enviando ? 'Enviando...' : 'Confirmar pedido'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function HacerPedido() {
   const navigate = useNavigate()
   const { usuario } = useAuth()
@@ -31,6 +50,7 @@ export default function HacerPedido() {
   const [metodoPago, setMetodoPago] = useState(usuario?.metodo_pago_preferido || '')
   const [enviando, setEnviando] = useState(false)
   const [pedidoConfirmado, setPedidoConfirmado] = useState(null)
+  const [avisoAbierto, setAvisoAbierto] = useState(false)
 
   useEffect(() => {
     api.get('/catalogo')
@@ -43,9 +63,13 @@ export default function HacerPedido() {
   const productosFiltrados = productos.filter(p => p.categoria === categoriaSeleccionada)
   const puntosAGanar = Math.floor(total / 500)
 
-  async function confirmarPedido() {
+  function abrirAviso() {
     if (!direccion.trim()) return alert('Ingresá una dirección de entrega')
     if (!metodoPago) return alert('Seleccioná un método de pago')
+    setAvisoAbierto(true)
+  }
+
+  async function confirmarPedido() {
     setEnviando(true)
     try {
       const res = await api.post('/catalogo/pedido', {
@@ -235,13 +259,21 @@ export default function HacerPedido() {
 
         <div className="px-4 pb-8 pt-3 bg-white border-t border-gray-100">
           <button
-            onClick={confirmarPedido}
+            onClick={abrirAviso}
             disabled={enviando || items.length === 0 || !metodoPago}
             className="btn-primary w-full text-base flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {enviando ? 'Enviando pedido...' : `Confirmar · $${total.toLocaleString('es-AR')}`}
           </button>
         </div>
+
+        {avisoAbierto && (
+          <AvisoPrecioReferencia
+            enviando={enviando}
+            onCancelar={() => setAvisoAbierto(false)}
+            onConfirmar={confirmarPedido}
+          />
+        )}
       </div>
     )
   }
@@ -391,7 +423,7 @@ export default function HacerPedido() {
                 <span className="font-bold text-dorado-500">+{puntosAGanar}</span>
               </div>
               <button
-                onClick={confirmarPedido}
+                onClick={abrirAviso}
                 disabled={enviando || !metodoPago}
                 className="btn-primary w-full disabled:opacity-50"
               >
@@ -414,6 +446,14 @@ export default function HacerPedido() {
             <span className="font-bold">${total.toLocaleString('es-AR')}</span>
           </button>
         </div>
+      )}
+
+      {avisoAbierto && (
+        <AvisoPrecioReferencia
+          enviando={enviando}
+          onCancelar={() => setAvisoAbierto(false)}
+          onConfirmar={confirmarPedido}
+        />
       )}
     </div>
   )
