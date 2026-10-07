@@ -4,7 +4,7 @@ import { useCarrito } from '../context/CarritoContext'
 import { useAuth } from '../context/AuthContext'
 import api from '../api'
 import { MOCK_CATALOGO } from '../mockData'
-import { Plus, Minus, ArrowLeft, CheckCircle, MapPin, FileText, Banknote, ArrowLeftRight } from 'lucide-react'
+import { Plus, Minus, ArrowLeft, CheckCircle, MapPin, FileText, Banknote, ArrowLeftRight, Search, X } from 'lucide-react'
 
 const CATEGORIAS_EMOJI = {
   Vacunos: '🥩',
@@ -44,6 +44,7 @@ export default function HacerPedido() {
 
   const [productos, setProductos] = useState([])
   const [categoriaActiva, setCategoriaActiva] = useState(null)
+  const [busqueda, setBusqueda] = useState('')
   const [paso, setPaso] = useState('catalogo') // catalogo | carrito | exito
   const [direccion, setDireccion] = useState(usuario?.direccion || '')
   const [notas, setNotas] = useState('')
@@ -60,7 +61,10 @@ export default function HacerPedido() {
 
   const categorias = [...new Set(productos.map(p => p.categoria))]
   const categoriaSeleccionada = categoriaActiva || categorias[0]
-  const productosFiltrados = productos.filter(p => p.categoria === categoriaSeleccionada)
+  const buscando = busqueda.trim().length > 0
+  const productosFiltrados = buscando
+    ? productos.filter(p => p.nombre.toLowerCase().includes(busqueda.trim().toLowerCase()))
+    : productos.filter(p => p.categoria === categoriaSeleccionada)
   const puntosAGanar = Math.floor(total / 500)
 
   function abrirAviso() {
@@ -295,9 +299,9 @@ export default function HacerPedido() {
           {categorias.map(cat => (
             <button
               key={cat}
-              onClick={() => setCategoriaActiva(cat)}
+              onClick={() => { setCategoriaActiva(cat); setBusqueda('') }}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
-                categoriaSeleccionada === cat ? 'bg-white text-verde-700' : 'bg-verde-600 text-verde-100'
+                !buscando && categoriaSeleccionada === cat ? 'bg-white text-verde-700' : 'bg-verde-600 text-verde-100'
               }`}
             >
               {CATEGORIAS_EMOJI[cat] || '🍽️'} {cat}
@@ -306,9 +310,36 @@ export default function HacerPedido() {
         </div>
       </div>
 
+      <div className="px-4 pt-3 md:px-6 bg-crema">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            placeholder="Buscar producto..."
+            className="input-field pl-9 pr-9 text-sm"
+          />
+          {buscando && (
+            <button
+              onClick={() => setBusqueda('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              aria-label="Limpiar búsqueda"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Lista productos */}
         <div className="flex-1 overflow-y-auto px-4 py-4 md:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 content-start pb-28 md:pb-6">
+          {buscando && productosFiltrados.length === 0 && (
+            <p className="col-span-full text-center text-gray-400 text-sm py-8">
+              No encontramos productos para "{busqueda.trim()}"
+            </p>
+          )}
           {productosFiltrados.map(producto => {
             const cantidad = cantidadDe(producto.id)
             return (
