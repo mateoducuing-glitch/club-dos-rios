@@ -348,10 +348,10 @@ export default function HacerPedido() {
                   <img
                     src={producto.imagen_url}
                     alt={producto.nombre}
-                    className="w-12 h-12 rounded-2xl object-cover flex-shrink-0"
+                    className="w-24 h-24 rounded-2xl object-cover flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-2xl bg-verde-50 flex items-center justify-center flex-shrink-0 text-2xl">
+                  <div className="w-24 h-24 rounded-2xl bg-verde-50 flex items-center justify-center flex-shrink-0 text-4xl">
                     {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
                   </div>
                 )}
