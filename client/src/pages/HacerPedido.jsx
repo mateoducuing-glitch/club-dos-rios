@@ -37,6 +37,59 @@ function AvisoPrecioReferencia({ onCancelar, onConfirmar, enviando }) {
   )
 }
 
+function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) {
+  return (
+    <div className="fixed inset-0 bg-black/40 z-[60] flex items-end md:items-center justify-center" onClick={onCerrar}>
+      <div
+        className="card p-0 overflow-hidden w-full md:max-w-md md:rounded-3xl rounded-t-3xl rounded-b-none max-h-[90vh] overflow-y-auto animate-fade-in-up"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="relative">
+          {producto.imagen_url ? (
+            <img src={producto.imagen_url} alt={producto.nombre} className="w-full aspect-square object-cover" />
+          ) : (
+            <div className="w-full aspect-square bg-verde-50 flex items-center justify-center text-8xl">
+              {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
+            </div>
+          )}
+          <button
+            onClick={onCerrar}
+            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-md"
+            aria-label="Cerrar"
+          >
+            <X size={18} className="text-gray-700" />
+          </button>
+        </div>
+        <div className="p-5">
+          <h3 className="text-xl font-bold text-gray-800">{producto.nombre}</h3>
+          {producto.descripcion && <p className="text-sm text-gray-500 mt-1">{producto.descripcion}</p>}
+          <p className="text-verde-700 font-bold text-2xl mt-3">
+            ${producto.precio.toLocaleString('es-AR')}<span className="text-gray-400 font-normal text-base"> / {producto.unidad}</span>
+          </p>
+
+          <div className="mt-5">
+            {cantidad === 0 ? (
+              <button onClick={() => onAgregar(producto)} className="btn-primary w-full flex items-center justify-center gap-2">
+                <Plus size={18} /> Agregar al pedido
+              </button>
+            ) : (
+              <div className="flex items-center justify-between gap-3">
+                <button onClick={() => onQuitar(producto.id)} className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center active:scale-90 transition-all">
+                  <Minus size={18} className="text-gray-600" />
+                </button>
+                <span className="font-bold text-gray-800 text-xl">{cantidad}</span>
+                <button onClick={() => onAgregar(producto)} className="w-12 h-12 rounded-2xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all">
+                  <Plus size={18} className="text-white" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function HacerPedido() {
   const navigate = useNavigate()
   const { usuario } = useAuth()
@@ -52,6 +105,7 @@ export default function HacerPedido() {
   const [enviando, setEnviando] = useState(false)
   const [pedidoConfirmado, setPedidoConfirmado] = useState(null)
   const [avisoAbierto, setAvisoAbierto] = useState(false)
+  const [productoDetalle, setProductoDetalle] = useState(null)
 
   useEffect(() => {
     api.get('/catalogo')
@@ -343,7 +397,11 @@ export default function HacerPedido() {
           {productosFiltrados.map(producto => {
             const cantidad = cantidadDe(producto.id)
             return (
-              <div key={producto.id} className="card p-0 overflow-hidden flex flex-col">
+              <div
+                key={producto.id}
+                className="card p-0 overflow-hidden flex flex-col cursor-pointer active:scale-[0.98] transition-transform"
+                onClick={() => setProductoDetalle(producto)}
+              >
                 {producto.imagen_url ? (
                   <img
                     src={producto.imagen_url}
@@ -363,7 +421,7 @@ export default function HacerPedido() {
                       ${producto.precio.toLocaleString('es-AR')}<span className="text-gray-400 font-normal"> / {producto.unidad}</span>
                     </p>
                   </div>
-                  <div>
+                  <div onClick={e => e.stopPropagation()}>
                     {cantidad === 0 ? (
                       <button onClick={() => agregar(producto)} className="w-10 h-10 rounded-2xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all shadow-md">
                         <Plus size={18} className="text-white" />
@@ -494,6 +552,16 @@ export default function HacerPedido() {
           enviando={enviando}
           onCancelar={() => setAvisoAbierto(false)}
           onConfirmar={confirmarPedido}
+        />
+      )}
+
+      {productoDetalle && (
+        <DetalleProducto
+          producto={productoDetalle}
+          cantidad={cantidadDe(productoDetalle.id)}
+          onCerrar={() => setProductoDetalle(null)}
+          onAgregar={agregar}
+          onQuitar={quitar}
         />
       )}
     </div>
