@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../context/CarritoContext'
 import { useAuth } from '../context/AuthContext'
@@ -38,52 +38,175 @@ function AvisoPrecioReferencia({ onCancelar, onConfirmar, enviando }) {
 }
 
 function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) {
+  const [imagenCargada, setImagenCargada] = useState(false)
+  const [imagenError, setImagenError] = useState(false)
+  const [confirmacionVisible, setConfirmacionVisible] = useState(false)
+  const dialogRef = useRef(null)
+  const focoAnteriorRef = useRef(null)
+  const cantidadAnteriorRef = useRef(cantidad)
+
+  // Accesibilidad: foco inicial, trampa de foco, Escape, bloqueo de scroll, restaurar foco al cerrar
+  useEffect(() => {
+    focoAnteriorRef.current = document.activeElement
+    document.body.style.overflow = 'hidden'
+    dialogRef.current?.focus()
+
+    function onKeyDown(e) {
+      if (e.key === 'Escape') {
+        onCerrar()
+        return
+      }
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusables = dialogRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusables.length === 0) return
+        const primero = focusables[0]
+        const ultimo = focusables[focusables.length - 1]
+        if (e.shiftKey && document.activeElement === primero) {
+          e.preventDefault()
+          ultimo.focus()
+        } else if (!e.shiftKey && document.activeElement === ultimo) {
+          e.preventDefault()
+          primero.focus()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = ''
+      if (focoAnteriorRef.current?.focus) focoAnteriorRef.current.focus()
+    }
+  }, [onCerrar])
+
+  // Confirmación visual breve cada vez que se agrega una unidad
+  useEffect(() => {
+    if (cantidad > cantidadAnteriorRef.current) {
+      setConfirmacionVisible(true)
+      const t = setTimeout(() => setConfirmacionVisible(false), 1300)
+      cantidadAnteriorRef.current = cantidad
+      return () => clearTimeout(t)
+    }
+    cantidadAnteriorRef.current = cantidad
+  }, [cantidad])
+
+  const subtotal = producto.precio * cantidad
+  const mostrarImagen = producto.imagen_url && !imagenError
+
   return (
-    <div className="fixed inset-0 bg-black/40 z-[60] flex items-end justify-center" onClick={onCerrar}>
+    <div
+      className="fixed inset-0 bg-black/50 z-[60] flex items-end md:items-center justify-center animate-backdrop-in"
+      onClick={onCerrar}
+    >
       <div
-        className="card p-0 overflow-hidden w-full max-w-md max-h-[92vh] rounded-t-3xl rounded-b-none flex flex-col animate-fade-in-up"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="detalle-producto-titulo"
+        tabIndex={-1}
         onClick={e => e.stopPropagation()}
+        className="bg-white w-full md:w-auto md:min-w-[420px] md:max-w-[600px] rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col max-h-[92vh] md:max-h-[85vh] outline-none animate-sheet-up"
       >
-        <div className="relative flex-shrink-0">
-          {producto.imagen_url ? (
-            <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-[52vh] object-cover" />
+        {/* Imagen */}
+        <div className="relative flex-shrink-0 bg-verde-50 rounded-t-3xl md:rounded-t-3xl overflow-hidden">
+          {mostrarImagen ? (
+            <>
+              {!imagenCargada && <div className="w-full aspect-[4/3] bg-gray-200 animate-pulse" />}
+              <img
+                src={producto.imagen_url}
+                alt={producto.nombre}
+                onLoad={() => setImagenCargada(true)}
+                onError={() => setImagenError(true)}
+                className={`w-full aspect-[4/3] object-cover ${imagenCargada ? 'block' : 'hidden'}`}
+              />
+            </>
           ) : (
-            <div className="w-full h-[52vh] bg-verde-50 flex items-center justify-center text-7xl">
+            <div className="w-full aspect-[4/3] flex items-center justify-center text-7xl">
               {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
             </div>
           )}
           <button
             onClick={onCerrar}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-md"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 flex items-center justify-center shadow-md active:scale-90 transition-all"
             aria-label="Cerrar"
           >
-            <X size={18} className="text-gray-700" />
+            <X size={20} className="text-gray-700" />
           </button>
         </div>
-        <div className="p-5 overflow-y-auto">
-          <h3 className="text-xl font-bold text-gray-800">{producto.nombre}</h3>
-          {producto.descripcion && <p className="text-sm text-gray-500 mt-1">{producto.descripcion}</p>}
-          <p className="text-verde-700 font-bold text-2xl mt-3">
-            ${producto.precio.toLocaleString('es-AR')}<span className="text-gray-400 font-normal text-base"> / {producto.unidad}</span>
+
+        {/* Contenido */}
+        <div className="flex-1 overflow-y-auto px-6 pt-6 pb-2">
+          <h2 id="detalle-producto-titulo" className="text-2xl font-bold text-gray-900 tracking-tight">
+            {producto.nombre}
+          </h2>
+          {producto.descripcion && (
+            <p className="text-sm text-gray-400 mt-1.5 leading-relaxed">{producto.descripcion}</p>
+          )}
+
+          <div className="flex items-baseline gap-2 mt-4">
+            <span className="text-3xl font-extrabold text-verde-700">
+              ${producto.precio.toLocaleString('es-AR')}
+            </span>
+            <span className="text-gray-400 text-sm">/ {producto.unidad}</span>
+          </div>
+          <p className="text-xs text-gray-400 mt-1">
+            Precio de referencia — el total final se ajusta al peso real del corte.
           </p>
 
-          <div className="mt-5">
-            {cantidad === 0 ? (
-              <button onClick={() => onAgregar(producto)} className="btn-primary w-full flex items-center justify-center gap-2">
-                <Plus size={18} /> Agregar al pedido
+          {/* Selector de cantidad */}
+          <div className="mt-6">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Cantidad</p>
+            <div className="flex items-center justify-between bg-gray-50 rounded-2xl p-2">
+              <button
+                onClick={() => onQuitar(producto.id)}
+                disabled={cantidad === 0}
+                className="w-11 h-11 rounded-xl bg-white shadow-sm flex items-center justify-center active:scale-90 transition-all disabled:opacity-30 disabled:active:scale-100"
+                aria-label="Quitar una unidad"
+              >
+                <Minus size={18} className="text-gray-700" />
               </button>
-            ) : (
-              <div className="flex items-center justify-between gap-3">
-                <button onClick={() => onQuitar(producto.id)} className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center active:scale-90 transition-all">
-                  <Minus size={18} className="text-gray-600" />
-                </button>
-                <span className="font-bold text-gray-800 text-xl">{cantidad}</span>
-                <button onClick={() => onAgregar(producto)} className="w-12 h-12 rounded-2xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all">
-                  <Plus size={18} className="text-white" />
-                </button>
+              <span className="font-bold text-gray-900 text-lg tabular-nums" aria-live="polite">
+                {cantidad} {producto.unidad}
+              </span>
+              <button
+                onClick={() => onAgregar(producto)}
+                className="w-11 h-11 rounded-xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all"
+                aria-label="Agregar una unidad"
+              >
+                <Plus size={18} className="text-white" />
+              </button>
+            </div>
+          </div>
+
+          {/* Subtotal + confirmación */}
+          <div className="mt-4 min-h-[2.5rem]">
+            {cantidad > 0 && (
+              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                <span className="text-sm text-gray-500">Subtotal estimado</span>
+                <span className="font-bold text-gray-900 text-lg">${subtotal.toLocaleString('es-AR')}</span>
               </div>
             )}
+            <p
+              className={`flex items-center gap-1.5 text-sm font-semibold text-verde-700 mt-2 transition-opacity duration-300 ${
+                confirmacionVisible ? 'opacity-100' : 'opacity-0'
+              }`}
+              aria-live="polite"
+            >
+              <CheckCircle size={15} /> Agregado al pedido
+            </p>
           </div>
+        </div>
+
+        {/* Footer fijo */}
+        <div className="flex-shrink-0 px-6 pt-3 border-t border-gray-100 safe-bottom">
+          <button
+            onClick={() => onAgregar(producto)}
+            className="btn-primary w-full flex items-center justify-center gap-2 py-3.5"
+          >
+            <Plus size={18} /> {cantidad === 0 ? 'Agregar al pedido' : 'Agregar otra unidad'}
+          </button>
         </div>
       </div>
     </div>
