@@ -19,6 +19,12 @@
   }
 }
 
+/* Alto de pantalla a prueba de navegadores viejos: vh como respaldo, dvh lo pisa si el navegador lo soporta */
+.h-pantalla {
+  height: 100vh;
+  height: 100dvh;
+}
+
 @layer components {
   .btn-primary {
     @apply bg-verde-700 text-white font-semibold py-3 px-6 rounded-2xl
