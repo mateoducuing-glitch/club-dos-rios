@@ -39,16 +39,16 @@ function AvisoPrecioReferencia({ onCancelar, onConfirmar, enviando }) {
 
 function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) {
   return (
-    <div className="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center p-4" onClick={onCerrar}>
+    <div className="fixed inset-0 bg-black/40 z-[60] flex items-end justify-center" onClick={onCerrar}>
       <div
-        className="card p-0 overflow-hidden w-full max-w-md max-h-[85vh] rounded-3xl flex flex-col animate-fade-in-up"
+        className="card p-0 overflow-hidden w-full max-w-md max-h-[92vh] rounded-t-3xl rounded-b-none flex flex-col animate-fade-in-up"
         onClick={e => e.stopPropagation()}
       >
         <div className="relative flex-shrink-0">
           {producto.imagen_url ? (
-            <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-64 object-cover" />
+            <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-[52vh] object-cover" />
           ) : (
-            <div className="w-full h-64 bg-verde-50 flex items-center justify-center text-7xl">
+            <div className="w-full h-[52vh] bg-verde-50 flex items-center justify-center text-7xl">
               {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
             </div>
           )}
