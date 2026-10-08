@@ -4,13 +4,13 @@ import { useCarrito } from '../context/CarritoContext'
 import { useAuth } from '../context/AuthContext'
 import api from '../api'
 import { MOCK_CATALOGO } from '../mockData'
-import { Plus, Minus, ArrowLeft, CheckCircle, MapPin, FileText, Banknote, ArrowLeftRight, Search, X } from 'lucide-react'
+import { Plus, Minus, ArrowLeft, CheckCircle, MapPin, FileText, Banknote, ArrowLeftRight, Search, X, ShoppingBag } from 'lucide-react'
 
 const CATEGORIAS_EMOJI = {
-  Vacunos: '🥩',
-  Cerdo: '🍖',
-  Embutidos: '🌭',
-  Listos: '🍔',
+  Cortes: '🥩',
+  Achuras: '🍖',
+  'Elaborados y Pollo': '🍗',
+  Otros: '🔥',
 }
 
 const METODOS_PAGO = [
@@ -241,7 +241,9 @@ export default function HacerPedido() {
   const buscando = busqueda.trim().length > 0
   const productosFiltrados = buscando
     ? productos.filter(p => p.nombre.toLowerCase().includes(busqueda.trim().toLowerCase()))
-    : productos.filter(p => p.categoria === categoriaSeleccionada)
+    : categoriaSeleccionada === 'Todos'
+      ? productos
+      : productos.filter(p => p.categoria === categoriaSeleccionada)
   const puntosAGanar = Math.floor(total / 500)
 
   function abrirAviso() {
@@ -462,50 +464,74 @@ export default function HacerPedido() {
   // ── PANTALLA CATÁLOGO ────────────────────────────────────────
   return (
     <div className="min-h-screen bg-crema flex flex-col">
-      <div className="bg-verde-700 text-white px-5 pt-12 pb-5 md:pt-8">
-        <div className="flex items-center gap-3 mb-4">
-          <button onClick={() => navigate(-1)} className="p-2 rounded-xl bg-verde-600">
-            <ArrowLeft size={18} />
-          </button>
-          <div>
-            <h1 className="text-xl font-bold">Hacer pedido</h1>
-            <p className="text-verde-200 text-sm">Dos Ríos Carnicería</p>
-          </div>
-        </div>
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-          {categorias.map(cat => (
-            <button
-              key={cat}
-              onClick={() => { setCategoriaActiva(cat); setBusqueda('') }}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
-                !buscando && categoriaSeleccionada === cat ? 'bg-white text-verde-700' : 'bg-verde-600 text-verde-100'
-              }`}
-            >
-              {CATEGORIAS_EMOJI[cat] || '🍽️'} {cat}
-            </button>
-          ))}
-        </div>
-      </div>
+      <div className="bg-verde-700 text-white px-4 pt-4 pb-3 md:px-8 md:pt-5 rounded-b-3xl shadow-lg">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-dorado-300 text-[11px] font-bold tracking-[0.15em] uppercase mb-1.5">
+            Dos Ríos · Carnicería
+          </p>
 
-      <div className="px-4 pt-3 md:px-6 bg-crema">
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            value={busqueda}
-            onChange={e => setBusqueda(e.target.value)}
-            placeholder="Buscar producto..."
-            className="input-field pl-9 pr-9 text-sm"
-          />
-          {buscando && (
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setBusqueda('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-              aria-label="Limpiar búsqueda"
+              onClick={() => navigate(-1)}
+              className="p-2 -ml-2 rounded-full hover:bg-verde-600 active:bg-verde-600 transition-colors flex-shrink-0"
+              aria-label="Volver"
             >
-              <X size={16} />
+              <ArrowLeft size={20} />
             </button>
-          )}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl md:text-2xl font-bold leading-tight truncate">Elegí tus productos</h1>
+              <p className="text-verde-200 text-xs md:text-sm mt-0.5 truncate">Cortes seleccionados para tu mesa</p>
+            </div>
+            <button
+              onClick={() => setPaso('carrito')}
+              className="relative p-2 -mr-2 rounded-full hover:bg-verde-600 active:bg-verde-600 transition-colors flex-shrink-0"
+              aria-label="Ver pedido"
+            >
+              <ShoppingBag size={20} />
+              {totalItems > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-dorado-500 text-verde-900 text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+          </div>
+
+          <div className="relative mt-3.5">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={busqueda}
+              onChange={e => setBusqueda(e.target.value)}
+              placeholder="Buscar productos..."
+              className="w-full bg-white text-gray-800 text-sm rounded-2xl pl-10 pr-9 py-2.5 outline-none placeholder:text-gray-400"
+            />
+            {buscando && (
+              <button
+                onClick={() => setBusqueda('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                aria-label="Limpiar búsqueda"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto mt-3 -mx-1 px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {['Todos', ...categorias].map(cat => {
+              const activa = !buscando && categoriaSeleccionada === cat
+              return (
+                <button
+                  key={cat}
+                  onClick={() => { setCategoriaActiva(cat); setBusqueda('') }}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+                    activa ? 'bg-crema text-verde-800' : 'bg-verde-600 text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              )
+            })}
+          </div>
         </div>
       </div>
 
