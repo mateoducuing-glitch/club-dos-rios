@@ -538,7 +538,7 @@ export default function HacerPedido() {
 
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Lista productos */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 md:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 content-start pb-28 md:pb-6">
+        <div className="flex-1 overflow-y-auto px-4 py-4 md:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-min gap-3 content-start items-start pb-28 md:pb-6">
           {buscando && productosFiltrados.length === 0 && (
             <p className="col-span-full text-center text-gray-400 text-sm py-8">
               No encontramos productos para "{busqueda.trim()}"
