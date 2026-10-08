@@ -344,9 +344,17 @@ export default function HacerPedido() {
             const cantidad = cantidadDe(producto.id)
             return (
               <div key={producto.id} className="card flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-verde-50 flex items-center justify-center flex-shrink-0 text-2xl">
-                  {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
-                </div>
+                {producto.imagen_url ? (
+                  <img
+                    src={producto.imagen_url}
+                    alt={producto.nombre}
+                    className="w-12 h-12 rounded-2xl object-cover flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-2xl bg-verde-50 flex items-center justify-center flex-shrink-0 text-2xl">
+                    {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-800">{producto.nombre}</p>
                   <p className="text-xs text-gray-400 mt-0.5 truncate">{producto.descripcion}</p>
