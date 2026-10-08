@@ -324,7 +324,7 @@ export default function HacerPedido() {
   // ── PANTALLA CARRITO (móvil) ─────────────────────────────────
   if (paso === 'carrito') {
     return (
-      <div className="min-h-screen bg-crema flex flex-col">
+      <div className="h-dvh bg-crema flex flex-col">
         <div className="bg-verde-700 text-white px-5 pt-12 pb-5 flex items-center gap-3">
           <button onClick={() => setPaso('catalogo')} className="p-2 rounded-xl bg-verde-600">
             <ArrowLeft size={18} />
