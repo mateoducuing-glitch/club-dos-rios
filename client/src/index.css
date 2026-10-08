@@ -70,7 +70,7 @@
 
 /* Safe area para iPhone */
 .safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 16px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
 }
 
 /* Modal de detalle de producto: sheet que entra desde abajo (mobile y desktop) */

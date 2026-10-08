@@ -113,17 +113,17 @@ function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) 
         <div className="relative flex-shrink-0 bg-verde-50 rounded-t-3xl md:rounded-t-3xl overflow-hidden">
           {mostrarImagen ? (
             <>
-              {!imagenCargada && <div className="w-full aspect-[4/3] bg-gray-200 animate-pulse" />}
+              {!imagenCargada && <div className="w-full aspect-[4/3] max-h-[34vh] bg-gray-200 animate-pulse" />}
               <img
                 src={producto.imagen_url}
                 alt={producto.nombre}
                 onLoad={() => setImagenCargada(true)}
                 onError={() => setImagenError(true)}
-                className={`w-full aspect-[4/3] object-cover ${imagenCargada ? 'block' : 'hidden'}`}
+                className={`w-full aspect-[4/3] max-h-[34vh] object-cover ${imagenCargada ? 'block' : 'hidden'}`}
               />
             </>
           ) : (
-            <div className="w-full aspect-[4/3] flex items-center justify-center text-7xl">
+            <div className="w-full aspect-[4/3] max-h-[34vh] flex items-center justify-center text-7xl">
               {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
             </div>
           )}
@@ -657,7 +657,7 @@ export default function HacerPedido() {
       </div>
 
       {/* Botón carrito flotante — solo móvil */}
-      {totalItems > 0 && (
+      {totalItems > 0 && !productoDetalle && (
         <div className="fixed bottom-6 left-4 right-4 md:hidden z-50 animate-fade-in-up">
           <button
             onClick={() => setPaso('carrito')}
