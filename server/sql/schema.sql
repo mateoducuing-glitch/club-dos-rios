@@ -126,3 +126,4 @@ CREATE INDEX IF NOT EXISTS idx_pedidos_cliente_id ON pedidos(cliente_id);
 CREATE INDEX IF NOT EXISTS idx_movimientos_cliente_id ON movimientos_puntos(cliente_id);
 CREATE INDEX IF NOT EXISTS idx_canjes_cliente_id ON canjes(cliente_id);
 CREATE INDEX IF NOT EXISTS idx_canjes_codigo ON canjes(codigo_cupon);
+
