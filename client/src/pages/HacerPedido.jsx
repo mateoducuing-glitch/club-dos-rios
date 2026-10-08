@@ -464,7 +464,7 @@ export default function HacerPedido() {
 
   // ── PANTALLA CATÁLOGO ────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-crema flex flex-col">
+    <div className="h-pantalla bg-crema flex flex-col">
       <div className="bg-verde-700 text-white px-4 pt-4 pb-3 md:px-8 md:pt-5 rounded-b-3xl shadow-lg">
         <div className="max-w-5xl mx-auto">
           <p className="text-dorado-300 text-[11px] font-bold tracking-[0.15em] uppercase mb-1.5">
@@ -597,11 +597,11 @@ export default function HacerPedido() {
         {/* Panel derecho — solo desktop */}
         {totalItems > 0 && (
           <div className="hidden md:flex flex-col w-80 bg-white border-l border-gray-100 shadow-xl">
-            <div className="p-5 border-b border-gray-100">
-              <h3 className="font-bold text-gray-800 text-lg">Tu pedido</h3>
-              <p className="text-gray-400 text-sm">{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</p>
+            <div className="px-4 py-3 border-b border-gray-100">
+              <h3 className="font-bold text-gray-800 text-base">Tu pedido</h3>
+              <p className="text-gray-400 text-xs">{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</p>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+            <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
               {items.map(item => (
                 <div key={item.id} className="flex items-center gap-2">
                   <div className="flex-1">
@@ -623,16 +623,16 @@ export default function HacerPedido() {
                 </div>
               ))}
 
-              <div className="mt-1 flex flex-col gap-2">
+              <div className="mt-1 flex flex-col gap-1.5">
                 <input
                   type="text"
                   value={direccion}
                   onChange={e => setDireccion(e.target.value)}
                   placeholder="Dirección de entrega *"
-                  className="input-field text-sm"
+                  className="input-field text-sm !py-2"
                 />
                 {/* Método de pago en desktop */}
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-1">Método de pago</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-0.5">Método de pago</p>
                 <div className="flex gap-2">
                   {METODOS_PAGO.map(m => {
                     const Icon = m.icon
@@ -641,7 +641,7 @@ export default function HacerPedido() {
                         key={m.id}
                         onClick={() => setMetodoPago(m.id)}
                         title={m.label}
-                        className={`flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-xl border-2 transition-all text-xs font-semibold ${
+                        className={`flex-1 flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl border-2 transition-all text-xs font-semibold ${
                           metodoPago === m.id
                             ? 'border-verde-700 bg-verde-50 text-verde-700'
                             : 'border-gray-100 text-gray-500 hover:border-gray-200'
@@ -657,17 +657,17 @@ export default function HacerPedido() {
                   value={notas}
                   onChange={e => setNotas(e.target.value)}
                   placeholder="Notas opcionales..."
-                  className="input-field text-sm resize-none"
+                  className="input-field text-sm resize-none !py-2"
                   rows={2}
                 />
               </div>
             </div>
-            <div className="p-4 border-t border-gray-100">
+            <div className="px-4 py-3 border-t border-gray-100">
               <div className="flex justify-between items-center mb-1">
                 <span className="text-gray-500 text-sm">Total</span>
                 <span className="font-bold text-gray-800">${total.toLocaleString('es-AR')}</span>
               </div>
-              <div className="flex justify-between items-center mb-3">
+              <div className="flex justify-between items-center mb-2">
                 <span className="text-dorado-500 text-sm">⭐ Puntos a ganar</span>
                 <span className="font-bold text-dorado-500">+{puntosAGanar}</span>
               </div>
@@ -685,7 +685,10 @@ export default function HacerPedido() {
 
       {/* Botón carrito flotante — solo móvil */}
       {totalItems > 0 && !productoDetalle && (
-        <div className="fixed bottom-6 left-4 right-4 md:hidden z-50 animate-fade-in-up">
+        <div
+          className="fixed left-4 right-4 md:hidden z-50 animate-fade-in-up"
+          style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 1.25rem)' }}
+        >
           <button
             onClick={() => setPaso('carrito')}
             className="w-full bg-verde-700 text-white rounded-3xl py-4 px-5 flex items-center justify-between shadow-2xl active:scale-95 transition-all"
