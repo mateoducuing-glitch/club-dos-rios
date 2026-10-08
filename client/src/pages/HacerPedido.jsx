@@ -39,16 +39,16 @@ function AvisoPrecioReferencia({ onCancelar, onConfirmar, enviando }) {
 
 function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) {
   return (
-    <div className="fixed inset-0 bg-black/40 z-[60] flex items-end md:items-center justify-center" onClick={onCerrar}>
+    <div className="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center p-4" onClick={onCerrar}>
       <div
-        className="card p-0 overflow-hidden w-full md:max-w-md md:rounded-3xl rounded-t-3xl rounded-b-none max-h-[90vh] overflow-y-auto animate-fade-in-up"
+        className="card p-0 overflow-hidden w-full max-w-md max-h-[85vh] rounded-3xl flex flex-col animate-fade-in-up"
         onClick={e => e.stopPropagation()}
       >
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           {producto.imagen_url ? (
-            <img src={producto.imagen_url} alt={producto.nombre} className="w-full aspect-square object-cover" />
+            <img src={producto.imagen_url} alt={producto.nombre} className="w-full h-64 object-cover" />
           ) : (
-            <div className="w-full aspect-square bg-verde-50 flex items-center justify-center text-8xl">
+            <div className="w-full h-64 bg-verde-50 flex items-center justify-center text-7xl">
               {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
             </div>
           )}
@@ -60,7 +60,7 @@ function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) 
             <X size={18} className="text-gray-700" />
           </button>
         </div>
-        <div className="p-5">
+        <div className="p-5 overflow-y-auto">
           <h3 className="text-xl font-bold text-gray-800">{producto.nombre}</h3>
           {producto.descripcion && <p className="text-sm text-gray-500 mt-1">{producto.descripcion}</p>}
           <p className="text-verde-700 font-bold text-2xl mt-3">
