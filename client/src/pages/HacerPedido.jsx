@@ -37,13 +37,13 @@ function AvisoPrecioReferencia({ onCancelar, onConfirmar, enviando }) {
   )
 }
 
-function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) {
+function DetalleProducto({ producto, cantidad, onCerrar, onAgregar }) {
   const [imagenCargada, setImagenCargada] = useState(false)
   const [imagenError, setImagenError] = useState(false)
+  const [cantidadLocal, setCantidadLocal] = useState(1)
   const [confirmacionVisible, setConfirmacionVisible] = useState(false)
   const dialogRef = useRef(null)
   const focoAnteriorRef = useRef(null)
-  const cantidadAnteriorRef = useRef(cantidad)
 
   // Accesibilidad: foco inicial, trampa de foco, Escape, bloqueo de scroll, restaurar foco al cerrar
   useEffect(() => {
@@ -81,18 +81,15 @@ function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) 
     }
   }, [onCerrar])
 
-  // Confirmación visual breve cada vez que se agrega una unidad
-  useEffect(() => {
-    if (cantidad > cantidadAnteriorRef.current) {
-      setConfirmacionVisible(true)
-      const t = setTimeout(() => setConfirmacionVisible(false), 1300)
-      cantidadAnteriorRef.current = cantidad
-      return () => clearTimeout(t)
-    }
-    cantidadAnteriorRef.current = cantidad
-  }, [cantidad])
+  function confirmarAgregado() {
+    for (let i = 0; i < cantidadLocal; i++) onAgregar(producto)
+    setConfirmacionVisible(true)
+    setTimeout(() => {
+      onCerrar()
+    }, 700)
+  }
 
-  const subtotal = producto.precio * cantidad
+  const subtotal = producto.precio * cantidadLocal
   const mostrarImagen = producto.imagen_url && !imagenError
 
   return (
@@ -155,25 +152,30 @@ function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) 
             Precio de referencia — el total final se ajusta al peso real del corte.
           </p>
 
-          {/* Selector de cantidad */}
+          {/* Selector de cantidad (local, todavia no se agrega al pedido) */}
           <div className="mt-6">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Cantidad</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Cantidad</p>
+              {cantidad > 0 && (
+                <p className="text-xs text-gray-400">Ya tenés {cantidad} {producto.unidad} en tu pedido</p>
+              )}
+            </div>
             <div className="flex items-center justify-between bg-gray-50 rounded-2xl p-2">
               <button
-                onClick={() => onQuitar(producto.id)}
-                disabled={cantidad === 0}
+                onClick={() => setCantidadLocal(c => Math.max(1, c - 1))}
+                disabled={cantidadLocal <= 1}
                 className="w-11 h-11 rounded-xl bg-white shadow-sm flex items-center justify-center active:scale-90 transition-all disabled:opacity-30 disabled:active:scale-100"
-                aria-label="Quitar una unidad"
+                aria-label="Restar unidad"
               >
                 <Minus size={18} className="text-gray-700" />
               </button>
               <span className="font-bold text-gray-900 text-lg tabular-nums" aria-live="polite">
-                {cantidad} {producto.unidad}
+                {cantidadLocal} {producto.unidad}
               </span>
               <button
-                onClick={() => onAgregar(producto)}
+                onClick={() => setCantidadLocal(c => c + 1)}
                 className="w-11 h-11 rounded-xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all"
-                aria-label="Agregar una unidad"
+                aria-label="Sumar unidad"
               >
                 <Plus size={18} className="text-white" />
               </button>
@@ -182,12 +184,10 @@ function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) 
 
           {/* Subtotal + confirmación */}
           <div className="mt-4 min-h-[2.5rem]">
-            {cantidad > 0 && (
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                <span className="text-sm text-gray-500">Subtotal estimado</span>
-                <span className="font-bold text-gray-900 text-lg">${subtotal.toLocaleString('es-AR')}</span>
-              </div>
-            )}
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+              <span className="text-sm text-gray-500">Subtotal estimado</span>
+              <span className="font-bold text-gray-900 text-lg">${subtotal.toLocaleString('es-AR')}</span>
+            </div>
             <p
               className={`flex items-center gap-1.5 text-sm font-semibold text-verde-700 mt-2 transition-opacity duration-300 ${
                 confirmacionVisible ? 'opacity-100' : 'opacity-0'
@@ -202,10 +202,11 @@ function DetalleProducto({ producto, cantidad, onCerrar, onAgregar, onQuitar }) 
         {/* Footer fijo */}
         <div className="flex-shrink-0 px-6 pt-3 border-t border-gray-100 safe-bottom">
           <button
-            onClick={() => onAgregar(producto)}
-            className="btn-primary w-full flex items-center justify-center gap-2 py-3.5"
+            onClick={confirmarAgregado}
+            disabled={confirmacionVisible}
+            className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 disabled:opacity-80"
           >
-            <Plus size={18} /> {cantidad === 0 ? 'Agregar al pedido' : 'Agregar otra unidad'}
+            <Plus size={18} /> Agregar {cantidadLocal} al pedido
           </button>
         </div>
       </div>
@@ -710,7 +711,6 @@ export default function HacerPedido() {
           cantidad={cantidadDe(productoDetalle.id)}
           onCerrar={() => setProductoDetalle(null)}
           onAgregar={agregar}
-          onQuitar={quitar}
         />
       )}
     </div>
