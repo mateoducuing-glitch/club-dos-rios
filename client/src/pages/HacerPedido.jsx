@@ -343,41 +343,43 @@ export default function HacerPedido() {
           {productosFiltrados.map(producto => {
             const cantidad = cantidadDe(producto.id)
             return (
-              <div key={producto.id} className="card flex items-center gap-3">
+              <div key={producto.id} className="card p-0 overflow-hidden flex flex-col">
                 {producto.imagen_url ? (
                   <img
                     src={producto.imagen_url}
                     alt={producto.nombre}
-                    className="w-24 h-24 rounded-2xl object-cover flex-shrink-0"
+                    className="w-full aspect-square object-cover"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-2xl bg-verde-50 flex items-center justify-center flex-shrink-0 text-4xl">
+                  <div className="w-full aspect-square bg-verde-50 flex items-center justify-center text-6xl">
                     {CATEGORIAS_EMOJI[producto.categoria] || '🥩'}
                   </div>
                 )}
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-800">{producto.nombre}</p>
-                  <p className="text-xs text-gray-400 mt-0.5 truncate">{producto.descripcion}</p>
-                  <p className="text-verde-700 font-bold text-sm mt-1">
-                    ${producto.precio.toLocaleString('es-AR')}<span className="text-gray-400 font-normal"> / {producto.unidad}</span>
-                  </p>
-                </div>
-                <div>
-                  {cantidad === 0 ? (
-                    <button onClick={() => agregar(producto)} className="w-10 h-10 rounded-2xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all shadow-md">
-                      <Plus size={18} className="text-white" />
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-1.5">
-                      <button onClick={() => quitar(producto.id)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:scale-90 transition-all">
-                        <Minus size={14} className="text-gray-600" />
+                <div className="p-4 flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-gray-800">{producto.nombre}</p>
+                    <p className="text-xs text-gray-400 mt-0.5 truncate">{producto.descripcion}</p>
+                    <p className="text-verde-700 font-bold text-sm mt-1">
+                      ${producto.precio.toLocaleString('es-AR')}<span className="text-gray-400 font-normal"> / {producto.unidad}</span>
+                    </p>
+                  </div>
+                  <div>
+                    {cantidad === 0 ? (
+                      <button onClick={() => agregar(producto)} className="w-10 h-10 rounded-2xl bg-verde-700 flex items-center justify-center active:scale-90 transition-all shadow-md">
+                        <Plus size={18} className="text-white" />
                       </button>
-                      <span className="w-5 text-center font-bold text-gray-800 text-sm">{cantidad}</span>
-                      <button onClick={() => agregar(producto)} className="w-8 h-8 rounded-full bg-verde-700 flex items-center justify-center active:scale-90 transition-all">
-                        <Plus size={14} className="text-white" />
-                      </button>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => quitar(producto.id)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:scale-90 transition-all">
+                          <Minus size={14} className="text-gray-600" />
+                        </button>
+                        <span className="w-5 text-center font-bold text-gray-800 text-sm">{cantidad}</span>
+                        <button onClick={() => agregar(producto)} className="w-8 h-8 rounded-full bg-verde-700 flex items-center justify-center active:scale-90 transition-all">
+                          <Plus size={14} className="text-white" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )
